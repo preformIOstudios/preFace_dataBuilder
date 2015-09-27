@@ -40,6 +40,39 @@ void ofApp::setup(){
     imageIndex = 0;
     imageSnapshot = false;
     img.allocate(video.getWidth(), video.getHeight(), OF_IMAGE_COLOR);
+    
+    // parse the JSON
+    bool parsingSuccessful = result.open("template.json");
+    
+    if (parsingSuccessful)
+    {
+        ofLogNotice("ofApp::setup() -- JSON raw string =") << endl << result.getRawString() << endl;
+        
+        // now write pretty print
+        if (!result.save("example_output_pretty.json", true))
+        {
+            ofLogNotice("ofApp::setup") << "example_output_pretty.json written unsuccessfully.";
+        }
+        else
+        {
+            ofLogNotice("ofApp::setup") << "example_output_pretty.json written successfully.";
+        }
+        
+        // now write without pretty print
+        if (!result.save("example_output_fast.json", false))
+        {
+            ofLogNotice("ofApp::setup") << "example_output_pretty.json written unsuccessfully.";
+        }
+        else
+        {
+            ofLogNotice("ofApp::setup") << "example_output_pretty.json written successfully.";
+        }
+        
+    }
+    else
+    {
+        ofLogError("ofApp::setup")  << "Failed to parse JSON" << endl;
+    }
 }
 
 //--------------------------------------------------------------
