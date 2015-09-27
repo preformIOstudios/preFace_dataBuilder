@@ -29,15 +29,15 @@ void ofApp::setup(){
     cout << "Hello World!" << endl;
     
     imageDir = "images";
-    imageNamePrefix = "video_";
+    imageNamePrefix = "christian_DSC_0176_";
     string videoFileName = imageNamePrefix + "480";
     video.loadMovie( videoFileName + ".mov");
     tracker.setup();
-    tracker.setRescale(.25);
-    tracker.setIterations(100);
-    tracker.setClamp(10);
-    tracker.setTolerance(.5);
-    tracker.setAttempts(4);
+    tracker.setRescale(.9);
+    tracker.setIterations(2);
+    tracker.setClamp(30);
+    tracker.setTolerance(5);
+    tracker.setAttempts(1);
     imageIndex = 0;
     imageSnapshot = false;
     img.allocate(video.getWidth(), video.getHeight(), OF_IMAGE_COLOR);
@@ -75,15 +75,25 @@ void ofApp::draw(){
     ofScale(scale, scale);
     video.draw(0, 0);
     ofSetLineWidth(2);
+    
+    // save snapshot without debug lines
+    if(imageSnapshot) {
+        img.grabScreen(0, 0, video.getWidth() * scale, video.getHeight() * scale);
+        string imgName = imageDir + "/" + imageNamePrefix + ofToString(imageIndex) + ".png";
+        img.saveImage(imgName);
+    }
+
+    
     tracker.draw();
     ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
     
+    // save debug snapshot
     if(imageSnapshot) {
-        //        img.grabScreen(0, video img.getWidth(), img.getHeight());
         img.grabScreen(0, 0, video.getWidth() * scale, video.getHeight() * scale);
-        //        img.grabScreen(0, 0, 640, 480);
-        string imgName = imageDir + "/" + imageNamePrefix + ofToString(imageIndex) + ".png";
+        string imgName = imageDir + "/" + imageNamePrefix + ofToString(imageIndex) + "_d.png";
         img.saveImage(imgName);
+        
+        // reset snapshot flag for next update() call
         imageSnapshot = false;
     }
 }
@@ -109,6 +119,9 @@ void ofApp::keyPressed(int key){
                 for(int j = 0; j < trackedFrames[i].getNumVertices(); j++) {
                     // result["vertices"][j] = ofVec2f(trackedFrames[i].getVertex(j));
                 }
+                result["scale"] = tracker.getScale();
+                result["posX"] = tracker.getPosition().x;
+                result["posY"] = tracker.getPosition().y;
             }
 
             ofLogNotice("ofApp::setup() -- JSON raw string =") << endl << result.getRawString() << endl;

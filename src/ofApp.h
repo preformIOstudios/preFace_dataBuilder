@@ -27,6 +27,8 @@ class ofApp : public ofBaseApp{
         ofVideoPlayer video;
         ofxFaceTracker tracker;
         vector<ofMesh> trackedFrames;
+        float trackedScale;
+        ofVec2f trackedPos;
         vector<vector<float> > trackedGestures;
         ofxJSONElement result;
         int imageIndex;
