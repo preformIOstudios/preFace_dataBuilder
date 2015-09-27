@@ -47,7 +47,6 @@ void ofApp::setup(){
     if (parsingSuccessful)
     {
         ofLogNotice("ofApp::setup() -- JSON raw string =") << endl << result.getRawString() << endl;
-        
         // now write pretty print
         if (!result.save("example_output_pretty.json", true))
         {
@@ -57,17 +56,6 @@ void ofApp::setup(){
         {
             ofLogNotice("ofApp::setup") << "example_output_pretty.json written successfully.";
         }
-        
-        // now write without pretty print
-        if (!result.save("example_output_fast.json", false))
-        {
-            ofLogNotice("ofApp::setup") << "example_output_pretty.json written unsuccessfully.";
-        }
-        else
-        {
-            ofLogNotice("ofApp::setup") << "example_output_pretty.json written successfully.";
-        }
-        
     }
     else
     {
