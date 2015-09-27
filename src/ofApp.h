@@ -33,5 +33,6 @@ class ofApp : public ofBaseApp{
         bool imageSnapshot;
         ofImage img;
         string imageNamePrefix;
+        string imageDir;
 		
 };

@@ -89,7 +89,22 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    float scale = ofGetWidth() / video.getWidth();
+    if ((ofGetHeight() / video.getHeight()) < scale) scale = ofGetHeight() / video.getHeight();
+    ofScale(scale, scale);
+    video.draw(0, 0);
+    ofSetLineWidth(2);
+    tracker.draw();
+    ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
+    
+    if(imageSnapshot) {
+        //        img.grabScreen(0, video img.getWidth(), img.getHeight());
+        img.grabScreen(0, 0, video.getWidth() * scale, video.getHeight() * scale);
+        //        img.grabScreen(0, 0, 640, 480);
+        string imgName = imageDir + imageNamePrefix + ofToString(imageIndex) + ".png";
+        img.saveImage(imgName);
+        imageSnapshot = false;
+    }
 }
 
 //--------------------------------------------------------------
