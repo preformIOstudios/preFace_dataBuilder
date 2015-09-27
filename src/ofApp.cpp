@@ -28,6 +28,7 @@ int gestureCount = 8;
 void ofApp::setup(){
     cout << "Hello World!" << endl;
     
+    imageDir = "images";
     imageNamePrefix = "video_";
     string videoFileName = imageNamePrefix + "480";
     video.loadMovie( videoFileName + ".mov");
@@ -41,26 +42,6 @@ void ofApp::setup(){
     imageSnapshot = false;
     img.allocate(video.getWidth(), video.getHeight(), OF_IMAGE_COLOR);
     
-    // parse the JSON
-    bool parsingSuccessful = result.open("template.json");
-    
-    if (parsingSuccessful)
-    {
-        ofLogNotice("ofApp::setup() -- JSON raw string =") << endl << result.getRawString() << endl;
-        // now write pretty print
-        if (!result.save("example_output_pretty.json", true))
-        {
-            ofLogNotice("ofApp::setup") << "example_output_pretty.json written unsuccessfully.";
-        }
-        else
-        {
-            ofLogNotice("ofApp::setup") << "example_output_pretty.json written successfully.";
-        }
-    }
-    else
-    {
-        ofLogError("ofApp::setup")  << "Failed to parse JSON" << endl;
-    }
 }
 
 //--------------------------------------------------------------
@@ -101,7 +82,7 @@ void ofApp::draw(){
         //        img.grabScreen(0, video img.getWidth(), img.getHeight());
         img.grabScreen(0, 0, video.getWidth() * scale, video.getHeight() * scale);
         //        img.grabScreen(0, 0, 640, 480);
-        string imgName = imageDir + imageNamePrefix + ofToString(imageIndex) + ".png";
+        string imgName = imageDir + "/" + imageNamePrefix + ofToString(imageIndex) + ".png";
         img.saveImage(imgName);
         imageSnapshot = false;
     }
@@ -109,6 +90,48 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    if(key == ' ') {
+        imageIndex ++;
+        imageSnapshot = true;
+        
+        // parse the JSON
+        bool parsingSuccessful = result.open("template.json");
+        
+        if (parsingSuccessful)
+        {
+
+//            ofFile out(imageDir + "/" + imageNamePrefix + ofToString(imageIndex) + ".json", ofFile::WriteOnly);
+
+            for(int i = 0; i < trackedFrames.size(); i++) {
+                for(int j = 0; j < gestureCount; j++) {
+                    result[gestureNames[j]] = trackedGestures[i][j];
+                }
+                for(int j = 0; j < trackedFrames[i].getNumVertices(); j++) {
+                    // result["vertices"][j] = ofVec2f(trackedFrames[i].getVertex(j));
+                }
+            }
+
+            ofLogNotice("ofApp::setup() -- JSON raw string =") << endl << result.getRawString() << endl;
+
+            // now write pretty print
+            if (!result.save(imageDir + "/" + imageNamePrefix + ofToString(imageIndex) + ".json", true))
+            {
+                ofLogNotice("ofApp::setup") << "example_output_pretty.json written unsuccessfully.";
+            }
+            else
+            {
+                ofLogNotice("ofApp::setup") << "example_output_pretty.json written successfully.";
+            }
+        }
+        else
+        {
+            ofLogError("ofApp::setup")  << "Failed to parse JSON" << endl;
+        }
+
+    }
+    if(key == 'f' || key == 'F') {
+        ofToggleFullscreen();
+    }
 
 }
 
