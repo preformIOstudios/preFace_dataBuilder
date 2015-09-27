@@ -65,7 +65,26 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    video.update();
+    if(video.isFrameNew()) {
+        tracker.update(toCv(video));
+        
+        // da È START
+        if (trackedFrames.size()) trackedFrames[0] = tracker.getImageMesh();
+        else trackedFrames.push_back(tracker.getImageMesh());
+        // da È END
+        
+        vector<float> curGesture;
+        for(int i = 0; i < gestureCount; i++) {
+            curGesture.push_back(tracker.getGesture(gestureIds[i]));
+        }
+        // da È START
+        if (trackedGestures.size()) trackedGestures[0] = curGesture;
+        else trackedGestures.push_back(curGesture);
+        // da È END
+        
+        video.nextFrame();
+    }
 }
 
 //--------------------------------------------------------------
